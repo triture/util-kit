@@ -1,2 +1,2 @@
 # util-kit
-A lot of generic and resuable things for haxe
+A lot of generic and reusable things for haxe
