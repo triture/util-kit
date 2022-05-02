@@ -7,6 +7,12 @@ using StringTools;
 
 class StringKit {
 
+    public static function removeQuotes(value:String):String {
+        if (value.length > 1 && value.charAt(0) == '"' && value.charAt(value.length-1) == '"') {
+            return value.substring(1, value.length-1);
+        } else return value;
+    }
+
     public static function simpleScape(value:String):String {
         if (value == null) return "";
 
