@@ -13,6 +13,26 @@ class StringKit {
         } else return value;
     }
 
+    public static function getWordSurroundingCharAt(value:String, position:Int):String {
+        var words:Array<String> = value.split(' ');
+        var lastWord:String = '';
+
+        if (words.length == 1) return value;
+        else {
+            var count:Int = 0;
+
+            for (word in words) {
+                if (!isEmpty(word)) lastWord = word;
+
+                count += word.length;
+                if (count >= position) return lastWord;
+                count ++; // add space
+            }
+
+            return lastWord;
+        }
+    }
+
     public static function simpleScape(value:String):String {
         if (value == null) return "";
 
