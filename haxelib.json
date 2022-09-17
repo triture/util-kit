@@ -8,5 +8,7 @@
   "version": "0.0.1",
   "releasenote": "",
   "contributors": [ "triture" ],
-  "dependencies": {}
+  "dependencies": {
+    "datetime" : ""
+  }
 }

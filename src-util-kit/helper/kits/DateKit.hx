@@ -1,5 +1,6 @@
 package helper.kits;
 
+import datetime.DateTime;
 import helper.types.TimeValue;
 
 class DateKit {
@@ -71,7 +72,7 @@ class DateKit {
 
     public static function calculateYearOld(birth:Date):Int {
 
-        if (birth == null || Std.is(birth, String)) return 0;
+        if (birth == null || Std.isOfType(birth, String)) return 0;
 
         var cur:Date = Date.now();
 
@@ -371,6 +372,26 @@ class DateKit {
     }
 
     public static function getMysqlDateField(fieldName:String):String return 'DATE_FORMAT($fieldName, \'%Y-%m-%d %H:%i:%s\') as $fieldName';
+
+
+    public static function isValidDateValue(value:Null<Dynamic>):Bool {
+        if (value == null) return false;
+
+        if (Std.isOfType(value, Date)) return true;
+        else if (Std.isOfType(value, String)) {
+            try {
+                var d = DateTime.fromString(value);
+                if (d.getYear() >= 1970) return true;
+            } catch (e:Dynamic) {}
+        } else if (Std.isOfType(value, Float)) {
+            try {
+                DateTime.fromTime(value);
+                return true;
+            } catch (e:Dynamic) {}
+        }
+
+        return false;
+    }
 
 
 }

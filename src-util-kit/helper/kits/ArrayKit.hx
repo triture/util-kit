@@ -1,5 +1,6 @@
 package helper.kits;
 
+import haxe.ds.StringMap;
 class ArrayKit {
 
     public static function getRandomItem<T>(values:Array<T>):T return values[NumberKit.getRandom(values.length, true)];
@@ -107,6 +108,12 @@ class ArrayKit {
         }
 
         return null;
+    }
+
+    public static function getUniqueStringValues(a:Array<String>):Array<String> {
+        var map:StringMap<Bool> = new StringMap<Bool>();
+        for (item in a) map.set(item, true);
+        return [for (key in map.keys()) key];
     }
 
     public static function getUniqueValues<T>(a:Array<T>, field:String):Array<Dynamic> {
@@ -278,10 +285,10 @@ class ArrayKit {
                 vy = Reflect.getProperty(y, field);
             }
 
-            if (Std.is(vx, Date)) vx = cast(vx, Date).getTime();
-            if (Std.is(vy, Date)) vy = cast(vy, Date).getTime();
+            if (Std.isOfType(vx, Date)) vx = cast(vx, Date).getTime();
+            if (Std.isOfType(vy, Date)) vy = cast(vy, Date).getTime();
 
-            if (!Std.is(vx, Float) && !Std.is(vx, Int)) {
+            if (!Std.isOfType(vx, Float) && !Std.isOfType(vx, Int)) {
                 vx = Std.string(vx).toLowerCase();
                 vy = Std.string(vy).toLowerCase();
             }

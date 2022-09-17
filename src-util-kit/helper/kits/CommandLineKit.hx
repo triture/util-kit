@@ -4,7 +4,6 @@ import haxe.io.Eof;
 import sys.io.Process;
 import Std;
 import String;
-import cpp.Lib;
 
 class CommandLineKit {
 
@@ -18,7 +17,7 @@ class CommandLineKit {
     inline private static var BOLD="\033[1m";
 
     inline static public function print(value:Dynamic):String {
-        Lib.print("\n" + value);
+        Sys.print("\n" + value);
 
         return "\n" + Std.string(value);
     }

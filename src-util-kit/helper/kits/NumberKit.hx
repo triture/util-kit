@@ -181,7 +181,7 @@ class NumberKit {
     static public function isEmpty(value:Null<Int>, negativesIsEmpty:Bool):Bool {
 
         if (value == null) return true;
-        else if (!Std.is(value, Int)) return true;
+        else if (!Std.isOfType(value, Int)) return true;
         else if (Std.parseInt(Std.string(value)) == 0 ) return true;
         else if (negativesIsEmpty && Std.parseInt(Std.string(value)) < 0) return true;
 

@@ -1,7 +1,9 @@
 package helper.maker;
 
+import helper.kits.StringKit;
 import haxe.ds.StringMap;
 import haxe.crypto.Sha256;
+
 class QueryMaker {
 
     public static var SANITIZE:String->String;
@@ -12,76 +14,58 @@ class QueryMaker {
         if (escape == null && SANITIZE == null) throw "Set a SANITIZE Method for QueryMaker";
         else if (escape == null && SANITIZE != null) escape = SANITIZE;
 
-        var fields:Array<String> = Reflect.fields(data);
+        var keyData:StringMap<Dynamic> = new StringMap<Dynamic>();
+        for (key in Reflect.fields(data)) keyData.set(key, Reflect.field(data, key));
 
-        // reordenando nome de campos para evitar sopreposição. Ex: :nome_campo pode ser encontrado em :nome_campo_1
+        var result:String = '';
 
-        fields.sort(
-            function(a:String, b:String):Int {
-                if (a > b) return -1;
-                else if (b > a) return 1;
-                else return 0;
-            }
-        );
+        var ereg:EReg = ~/:([a-zA-Z0-9_]+)/gm;
 
-        // substituindo nome dos campos por hashes, para evitar injecao
-        // de sql por dados que carregam instruções previsiveis.
-        // exemplo: um valor de string que carrega no conteudo a instrução :id que posteriormente
-        // pode comprometer a montagem da query resubstituindo o valor de :id
+        while (ereg.match(sql)) {
+            result += ereg.matchedLeft();
 
-        var result:String = sql;
-        var hashedMap:StringMap<String> = new StringMap<String>();
+            var key:String = ereg.matched(1);
+            if (keyData.exists(key)) result += sanitizeValue(keyData.get(key), escape);
+            else result += ':${key}';
 
-        for (i in 0 ... fields.length) {
-            var originalField:String = fields[i];
-            var hashedField:String = Sha256.encode(originalField + Date.now().toString());
-
-            hashedMap.set(fields[i], hashedField);
-
-            result = result.split(":" + originalField).join(":" + hashedField);
+            sql = ereg.matchedRight();
         }
 
+        result += sql;
 
-        for (key in fields) {
+        return result;
+    }
 
-            var value:Dynamic = Reflect.field(data, key);
-            var valueSanitize:String = "";
+    static private function sanitizeValue(value:Null<Dynamic>, escape:String->String):String {
+        var result:String = "";
 
-            if (value == null) {
-                valueSanitize = "NULL";
+        if (value == null) result = "NULL";
+        else if (Std.isOfType(value, Bool)) result = value ? '1' : '0';
+        else if (Std.isOfType(value, Int)) result = '${value}';
+        else if (Std.isOfType(value, Date)) {
 
-            } else if (Std.is(value, Bool)) {
-                valueSanitize = value ? '1' : '0';
+            var date:Date = cast value;
+            var dateString:String = '' +
+            '"${date.getFullYear()}-' +
+            '${StringTools.lpad(Std.string(date.getMonth()+1), "0", 2)}-' +
+            '${StringTools.lpad(Std.string(date.getDate()), "0", 2)} ' +
+            '${StringTools.lpad(Std.string(date.getHours()), "0", 2)}:' +
+            '${StringTools.lpad(Std.string(date.getMinutes()), "0", 2)}:' +
+            '${StringTools.lpad(Std.string(date.getSeconds()), "0", 2)}"';
 
-            } else if (Std.is(value, Date)) {
-                var date:Date = cast value;
-                var dateString:String = '' +
-                '"${date.getFullYear()}-' +
-                '${StringTools.lpad(Std.string(date.getMonth()+1), "0", 2)}-' +
-                '${StringTools.lpad(Std.string(date.getDate()), "0", 2)} ' +
-                '${StringTools.lpad(Std.string(date.getHours()), "0", 2)}:' +
-                '${StringTools.lpad(Std.string(date.getMinutes()), "0", 2)}:' +
-                '${StringTools.lpad(Std.string(date.getSeconds()), "0", 2)}"';
+            result = '${dateString}';
 
-                valueSanitize = '${dateString}';
+        } else {
+            var valueString:String = Std.string(value);
 
-            } else if (Std.is(value, Int)) {
-                valueSanitize = '${value}';
+            if (valueString.length == 0) result = "''";
+            else {
+                result = escape(valueString);
 
-            } else {
-                var valueString:String = Std.string(value);
-
-                if (valueString.length == 0) valueSanitize = "''";
-                else {
-                    valueSanitize = escape(valueString);
-
-                    #if php
+                #if php
                     valueSanitize = "'" + valueSanitize + "'";
                     #end
-                }
             }
-
-            result = result.split(":" + hashedMap.get(key)).join(valueSanitize);
         }
 
         return result;

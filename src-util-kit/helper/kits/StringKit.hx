@@ -405,6 +405,13 @@ class StringKit {
         return lastName;
     }
 
+    public static function getEmail(value:String):Null<String> {
+        var ereg:EReg = ~/[A-Z0-9]+[A-Z0-9._%-]*@[A-Z0-9]+[A-Z0-9.-]*\.[A-Z][A-Z][A-Z]?/i;
+
+        if (ereg.match(value)) return ereg.matched(0).toLowerCase();
+        else return null;
+    }
+
     public static function isEmail(email:String):Bool {
         var emailExpression:EReg = ~/[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z][A-Z][A-Z]?/i;
         return emailExpression.match(email);
@@ -474,7 +481,7 @@ class StringKit {
 
     public static function isEmpty(value:Null<String>):Bool {
         if (value == null) return true;
-        else if (StringKit.trim(Std.string(value)).length == 0) return true;
+        else if (StringKit.trim(value).length == 0) return true;
         else return false;
     }
 

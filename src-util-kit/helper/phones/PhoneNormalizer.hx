@@ -16,7 +16,7 @@ class PhoneNormalizer {
         return result;
     }
 
-    private static function convertNumberToPhone(phone:String, defaultDDD:Int, defaultDDI:Int = 55):PhoneModel {
+    public static function convertNumberToPhone(phone:String, defaultDDD:Int, defaultDDI:Int = 55):PhoneModel {
         if (phone == null) return null;
 
         // 55 11 986363051
@@ -73,3 +73,26 @@ class PhoneNormalizer {
         return result;
     }
 }
+
+
+/**
+https://gist.github.com/boliveirasilva/c927811ff4a7d43a0e0c
+function phoneValidate($phone)
+    {
+        $regex = '/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/';
+        if (preg_match($regex, $phone) == false) {
+            // O número não foi validado.
+            return false;
+        } else {
+            // Telefone válido.
+            return true;
+        }
+    }
+
+    // Se o parâmetro 'matches' for utilizado, o retorno será um array com 4 campos:
+    // - DDI
+    // - DDD
+    // - Primeira parte do número;
+    // - Segunda parte do número;
+
+*/
