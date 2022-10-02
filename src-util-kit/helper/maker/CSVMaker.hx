@@ -13,12 +13,13 @@ class CSVMaker {
         options.escapedQuote = options.quote == '"' ? '""' : '\\${options.quote}';
         options.newline = '\n';
 
-        return data.map(function(row) {
-            return row.map(function(cell) {
-                if(requiresQuotes(cell, options.delimiter, options.quote))
-                    return applyQuotes(cell, options.quote, options.escapedQuote);
-                else
-                    return cell;
+        return data.map(function(row:Array<String>):String {
+            return row.map(function(cell:String):String {
+                if (cell == null) return '';
+
+                if (requiresQuotes(cell, options.delimiter, options.quote)) return applyQuotes(cell, options.quote, options.escapedQuote);
+                else return cell;
+
             }).join(options.delimiter);
         }).join(options.newline);
     }
