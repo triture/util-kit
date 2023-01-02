@@ -200,6 +200,10 @@ class DateKit {
         return Date.fromTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     }
 
+    public static function addMinutes(date:Date, minutes:Int):Date {
+        return Date.fromTime(date.getTime() + minutes * 60 * 1000);
+    }
+
     public static function addMonth(date:Date, months:Int):Date {
         var curYear:Int = date.getFullYear();
         var curMonth:Int = date.getMonth() + 1;
