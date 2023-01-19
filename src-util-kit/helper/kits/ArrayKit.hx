@@ -62,6 +62,16 @@ class ArrayKit {
         return result;
     }
 
+    public static function joinArray<T>(arrayA:Array<T>, arrayB:Array<T>, onPosition:Int):Array<T> {
+        var result:Array<T> = [];
+
+        for (i in 0 ... onPosition) result.push(arrayA[i]);
+        for (i in 0 ... arrayB.length) result.push(arrayB[i]);
+        for (i in onPosition ... arrayA.length) result.push(arrayA[i]);
+
+        return result;
+    }
+
     public static function mergeUniques<T>(arr1:Array<T>, arr2:Array<T>):Array<T> {
         var result:Array<T> = [];
 
