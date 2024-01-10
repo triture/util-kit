@@ -507,4 +507,15 @@ class StringKit {
         }
     }
 
+    public static function isValidJson(value:String):Bool {
+        if (isEmpty(value)) return false;
+        
+        try {
+            var json:Dynamic = haxe.Json.parse(value);
+            return true;
+        } catch (e:Dynamic) {
+            return false;
+        }
+    }
+
 }
