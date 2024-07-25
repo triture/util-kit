@@ -63,8 +63,12 @@ class QueryMaker {
                 result = escape(valueString);
 
                 #if php
-                    valueSanitize = "'" + valueSanitize + "'";
-                    #end
+                result = "'" + result + "'";
+                #end
+
+                #if neko
+                result = "'" + result + "'";
+                #end
             }
         }
 
