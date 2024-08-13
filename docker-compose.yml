@@ -1,0 +1,13 @@
+version: '3'
+services:
+
+    haxe:
+        restart: always
+        build:
+            context: ./docker/haxe/
+            dockerfile: dockerfile
+        environment: 
+            KEEP_CONTAINER_ALIVE: "yes"
+        volumes:
+            - ./docker/shared:/docker-shared
+            - ./util-kit:/util-kit

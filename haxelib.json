@@ -2,7 +2,7 @@
   "name": "util-kit",
   "url": "https://github.com/triture/util-kit",
   "license": "MIT",
-  "classPath": "src-util-kit/",
+  "classPath": "util-kit/src-lib",
   "tags": [ "util"],
   "description": "",
   "version": "0.0.1",

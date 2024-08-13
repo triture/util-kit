@@ -1,0 +1,10 @@
+
+-lib utest
+-lib datetime
+
+-cp src-test
+-cp src-lib
+
+-main util.kit.test.unit.UtilKitTestUnit
+
+-neko ./build/util/kit/test/unit.n
