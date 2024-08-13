@@ -355,6 +355,11 @@ class StringKit {
         return result;
     }
 
+    public static function hasAllowedChars(value:String, allowedChars:String):Bool {
+        for (i in 0 ... value.length) if (allowedChars.indexOf(value.charAt(i)) == -1) return false;
+        return true;
+    }
+
     public static function getAllowedChars(value:String, allowed:String = ""):String {
         if (allowed == null || allowed == "") return value;
 

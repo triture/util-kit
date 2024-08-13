@@ -56,7 +56,7 @@ class TestUUID extends Test {
 
         var expectedP1:Int = 100;
         var resultP1:Int;
-
+        
         // ACT
         uuid.p1 = valueP1;
         resultP1 = uuid.p1;
@@ -65,4 +65,30 @@ class TestUUID extends Test {
         Assert.equals(expectedP1, resultP1);
     }
 
+    function test_invalid_uuid() {
+        // ARRANGE
+        var uuid:UUID;
+        
+        var raisesSmaller:()->Void;
+        var raisesBigger:()->Void;
+        var raisesInvalidChar:()->Void;
+
+        // ACT
+        raisesSmaller = () -> {
+            uuid = "AA000000-BB00-CC00-DD00-EE00FF00000";
+        };
+
+        raisesBigger = () -> {
+            uuid = "AA000000-BB00-CC00-DD00-EE00FF0000000";
+        };
+
+        raisesInvalidChar = () -> {
+            uuid = "AA000000-BB00-CC00-DD00-EE00FF00000G";
+        };
+        
+        // ASSERT
+        Assert.raises(raisesSmaller);
+        Assert.raises(raisesBigger);
+        Assert.raises(raisesInvalidChar);
+    }
 }
