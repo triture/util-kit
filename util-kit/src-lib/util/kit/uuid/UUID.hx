@@ -1,8 +1,6 @@
 package util.kit.uuid;
 
 import helper.kits.StringKit;
-import haxe.io.Encoding;
-import haxe.io.Bytes;
 
 // Offset   0        8    12   16   20  24
 // Offset+  +8       +4   +4   +4   +4  +8

@@ -12,6 +12,9 @@ abstract Path(String) {
     @:from
     inline static private function fromString(value:String):Path return new Path(value);
 
+    @:to
+    inline public function toString():String return this;
+
     inline public function parts():Array<PathPartData> {
         var result:Array<PathPartData> = [];
 
