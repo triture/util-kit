@@ -22,10 +22,7 @@ abstract UUID(String) {
         }
     }
 
-    inline private function validate(value:String):Void {
-        if (value.length != 32) throw "Invalid UUID format";
-        else if (StringKit.hasAllowedChars(value, "0123456789ABCDEF") == false) throw "Invalid UUID format";
-    }
+    inline private function validate(value:String):Void if (!isValid(value)) throw "Invalid UUID format";
 
     static inline public function create():UUID return new UUID();
     static inline public function createRandom():UUID return new UUID(StringKit.generateRandomHex(16));
@@ -57,5 +54,10 @@ abstract UUID(String) {
     inline private function set_p1(value:Int):Int {
         this = StringTools.hex(value, 8) + this.substring(8, 32);
         return value;
+    }
+
+    static public function isValid(value:String):Bool {
+        var r:EReg = new EReg('^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$', '');
+        return r.match(value);
     }
 }

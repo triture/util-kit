@@ -91,4 +91,44 @@ class TestUUID extends Test {
         Assert.raises(raisesBigger);
         Assert.raises(raisesInvalidChar);
     }
+
+    function test_valid_uuid() {
+        // ARRANGE
+        var uuid:UUID;
+        
+        var valueCorrect_1:String = "AA000000-BB00-CC00-DD00-EE00FF000000";
+        var valueCorrect_2:String = "AA000000BB00CC00DD00EE00FF000000";
+        var valueCorrect_3:String = "aa000000-bb00-cc00-dd00-ee00ff000000";
+
+        var valueWrong_1:String = "AA000000-BB00-CC00-DD00-EE00FF00000";
+        var valueWrong_2:String = "AA000000BB00CC00DD00EE00FF0000000";
+        var valueWrong_3:String = "AA000000-BB00-CC00-DD00-EE00FF00000G";
+
+        var resultCorrect_1:Bool;
+        var resultCorrect_2:Bool;
+        var resultCorrect_3:Bool;
+
+        var resultWrong_1:Bool;
+        var resultWrong_2:Bool;
+        var resultWrong_3:Bool;
+
+        // ACT
+        resultCorrect_1 = UUID.isValid(valueCorrect_1);
+        resultCorrect_2 = UUID.isValid(valueCorrect_2);
+        resultCorrect_3 = UUID.isValid(valueCorrect_3);
+
+        resultWrong_1 = UUID.isValid(valueWrong_1);
+        resultWrong_2 = UUID.isValid(valueWrong_2);
+        resultWrong_3 = UUID.isValid(valueWrong_3);
+        
+        
+        // ASSERT
+        Assert.isTrue(resultCorrect_1);
+        Assert.isTrue(resultCorrect_2);
+        Assert.isTrue(resultCorrect_3);
+
+        Assert.isFalse(resultWrong_1);
+        Assert.isFalse(resultWrong_2);
+        Assert.isFalse(resultWrong_3);
+    }
 }
