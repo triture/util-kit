@@ -93,9 +93,7 @@ class TestUUID extends Test {
     }
 
     function test_valid_uuid() {
-        // ARRANGE
-        var uuid:UUID;
-        
+        // ARRANGE        
         var valueCorrect_1:String = "AA000000-BB00-CC00-DD00-EE00FF000000";
         var valueCorrect_2:String = "AA000000BB00CC00DD00EE00FF000000";
         var valueCorrect_3:String = "aa000000-bb00-cc00-dd00-ee00ff000000";
