@@ -16,10 +16,10 @@ abstract Kid(String) {
 
     public var id(get, set):Int;
     public var key(get, set):String;
-
-    public function new(?id:Int) {
+    
+    public function new(?id:Int, ?key:String) {
         if (id == null) id = 0;
-        var key:String = StringKit.generateRandomHex(KEY_LENGTH >> 1).toUpperCase();
+        var key:String = key == null ? StringKit.generateRandomHex(KEY_LENGTH >> 1).toUpperCase() : key.toUpperCase();
         this = key + "-" + decToHex(id);
     }
 
@@ -33,12 +33,12 @@ abstract Kid(String) {
     inline static public function fromString(value:String):Kid return cast value;
 
     inline private function getIdHex():String {
-        if (!isValid()) return '00000000';
+        if (!isValid(this)) return '00000000';
         return this.substr(KEY_LENGTH + 1, ID_LENGTH);
     }
 
     inline private function get_id():Int {
-        if (!isValid()) return 0;
+        if (!isValid(this)) return 0;
         return hexToDec(this.substr(KEY_LENGTH + 1, ID_LENGTH));
     }
 
@@ -48,7 +48,7 @@ abstract Kid(String) {
     }
 
     inline private function get_key():String {
-        if (!isValid()) return '00000000000000000000000000000000';
+        if (!isValid(this)) return '00000000000000000000000000000000';
         return this.substr(0, KEY_LENGTH);
     }
 
@@ -57,9 +57,9 @@ abstract Kid(String) {
         return value;
     }
 
-    private function isValid():Bool {
+    static public function isValid(value:String):Bool {
         var r:EReg = new EReg('^[a-fA-F0-9]{${KEY_LENGTH}}-[a-fA-F0-9]{${ID_LENGTH}}$', '');
-        return r.match(this);
+        return r.match(value);
     }
 
 }
