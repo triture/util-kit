@@ -101,5 +101,32 @@ class TestKid extends Test {
         Assert.notEquals(notExpectedKey, resultKey);
         Assert.equals(expectedId, resultId);
     }
+
+    function test_kid_change_kid_key_size() {
+        // ARRANGE
+        var valueId:Int = 7926;
+        var valueKey:String = '00000000';
+
+        var kid:Kid;
+
+        var expectedKey:String = '00000000';
+        var expectedId:Int = 7926;
+        
+        var resultKey:String;
+        var resultId:Int;
+
+        // ACT
+        Kid.KEY_LENGTH = 8;
+
+        kid = new Kid(valueId, valueKey);
+        resultKey = kid.key;
+        resultId = kid.id;
+
+        Kid.KEY_LENGTH = 32;
+
+        // ASSERT
+        Assert.equals(expectedKey, resultKey);
+        Assert.equals(expectedId, resultId);
+    }
     
 }

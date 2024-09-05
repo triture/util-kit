@@ -10,9 +10,9 @@ import helper.kits.StringKit;
 // KID = 00000000000000000000000000000000-000000
 
 abstract Kid(String) {
-
+    
     static private inline var ID_LENGTH:Int = 8;
-    static private inline var KEY_LENGTH:Int = 32;
+    static public var KEY_LENGTH:Int = 32;
 
     public var id(get, set):Int;
     public var key(get, set):String;
