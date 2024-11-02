@@ -277,6 +277,29 @@ class ArrayKit {
         return result;
     }
 
+    public static function sortAsc<T, R>(a:Array<T>, extraction:(v:T)->R):Array<T> return sort(a, extraction, true);
+    public static function sortDesc<T, R>(a:Array<T>, extraction:(v:T)->R):Array<T> return sort(a, extraction, false);
+    private static function sort<T, R>(a:Array<T>, extraction:(v:T)->R, ASC:Bool = true):Array<T> {
+        a.sort((a:T, b:T) -> {
+            var vx:Dynamic = extraction(ASC ? a : b);
+            var vy:Dynamic = extraction(ASC ? b : a);
+
+            if (Std.isOfType(vx, Date)) vx = cast(vx, Date).getTime();
+            if (Std.isOfType(vy, Date)) vy = cast(vy, Date).getTime();
+
+            if (!Std.isOfType(vx, Float) && !Std.isOfType(vx, Int)) {
+                vx = Std.string(vx).toLowerCase();
+                vy = Std.string(vy).toLowerCase();
+            }
+
+            if (vx > vy) return 1;
+            else if (vy > vx) return -1;
+            else return 0;
+        });
+
+        return a;
+    }
+
     public static function sortByFieldAndReturn<T>(a:Array<T>, field:String = null, ASC:Bool = true):Array<T> {
         sortByField(a, field, ASC);
         return a;
