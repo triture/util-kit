@@ -18,7 +18,7 @@ enum abstract PathParamType(String) {
         }
     }
 
-    static public function toName():String  {
+    public function toName():String  {
         return switch value.toLowerCase() {
             case 'string': 'String';
             case 'int': 'Integer';
