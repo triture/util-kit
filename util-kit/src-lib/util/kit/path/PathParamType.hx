@@ -19,5 +19,5 @@ enum abstract PathParamType(String) {
     }
 
     @:to
-    inline static private function toString():String return this;
+    inline private function toString():String return this;
 }
