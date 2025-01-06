@@ -18,6 +18,16 @@ enum abstract PathParamType(String) {
         }
     }
 
+    static public function toName():String  {
+        return switch value.toLowerCase() {
+            case 'string': 'String';
+            case 'int': 'Integer';
+            case 'float': 'Float';
+            case 'bool': 'Boolean';
+            default : throw 'Invalid PathParamType';
+        }
+    }
+
     @:to
-    inline private function toString():String return this;
+    inline public function toString():String return this;
 }
