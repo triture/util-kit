@@ -17,4 +17,7 @@ enum abstract PathParamType(String) {
             default : throw 'Invalid PathParamType';
         }
     }
+
+    @:to
+    inline static private function toString():String return this;
 }
