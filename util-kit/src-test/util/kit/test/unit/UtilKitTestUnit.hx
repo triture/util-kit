@@ -1,5 +1,6 @@
 package util.kit.test.unit;
 
+import util.kit.test.unit.nothing.TestNothing;
 import util.kit.test.unit.kit.TestArrayKit;
 import util.kit.test.unit.kid.TestKid;
 import util.kit.test.unit.path.TestPath;
@@ -16,6 +17,7 @@ class UtilKitTestUnit {
         runner.addCase(new TestPath());
         runner.addCase(new TestKid());
         runner.addCase(new TestArrayKit());
+        runner.addCase(new TestNothing());
         
         Report.create(runner);
         runner.run();
