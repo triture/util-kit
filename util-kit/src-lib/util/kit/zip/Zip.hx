@@ -1,5 +1,6 @@
 package util.kit.zip;
 
+import haxe.io.Path;
 import haxe.zip.Reader;
 import haxe.io.BytesInput;
 import haxe.ds.StringMap;
@@ -58,7 +59,6 @@ class Zip {
         if (!existFile(filename)) return null;
 
         var entry:Entry = this.entries.get(filename);
-
         return Reader.unzip(entry);
     }
 
@@ -99,19 +99,27 @@ class Zip {
 
     #if (sys || nodejs)
     public function extract(path:String):Void {
-        if (!StringTools.endsWith(path, "/")) path += "/";
-        
+        path = this.normalizePath(path);
         helper.kits.FileKit.initializePath(path);
 
         for (filename in this.entryOrder) {
             var content:Bytes = this.getContent(filename);
             
-            if (StringTools.endsWith(filename, "/") && content.length == 0) {
+            if (content.length == 0) {
                 helper.kits.FileKit.initializePath(path + filename);
             } else {
+                var fullPath:String = Path.join([path, filename]);
+                var fullDirectory:String = fullPath.split('/').slice(0, -1).join('/');
+                helper.kits.FileKit.initializePath(fullDirectory);
+
                 sys.io.File.saveBytes(path + filename, content);
             }
         }
+    }
+
+    inline private function normalizePath(path:String):String {
+        if (StringTools.endsWith(path, "/")) return path;
+        return path + "/";
     }
     #end
 
