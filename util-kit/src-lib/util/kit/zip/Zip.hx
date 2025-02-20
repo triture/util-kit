@@ -97,7 +97,7 @@ class Zip {
         }
     }
 
-    #if sys
+    #if (sys || nodejs)
     public function extract(path:String):Void {
         if (!StringTools.endsWith(path, "/")) path += "/";
         
@@ -106,7 +106,11 @@ class Zip {
         for (filename in this.entryOrder) {
             var content:Bytes = this.getContent(filename);
             
-            sys.io.File.saveBytes(path + filename, content);
+            if (StringTools.endsWith(filename, "/") && content.length == 0) {
+                helper.kits.FileKit.initializePath(path + filename);
+            } else {
+                sys.io.File.saveBytes(path + filename, content);
+            }
         }
     }
     #end
