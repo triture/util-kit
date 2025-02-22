@@ -12,7 +12,7 @@ class TestPath extends Test {
     
     function test_path_parts_should_provide_list_of_parts() {
         // ARRANGE
-        var path:Path = '/some/path';
+        var path:Path<Dynamic> = '/some/path';
 
         var expected:Array<PathPartData> = [{part: "some", is_param: false}, {part: "path", is_param: false}];
         var result:Array<PathPartData>;
@@ -26,7 +26,7 @@ class TestPath extends Test {
 
     function test_path_parts_should_be_url_decoded() {
         // ARRANGE
-        var path:Path = '/some%20path';
+        var path:Path<Dynamic> = '/some%20path';
 
         var expected:Array<PathPartData> = [{part: "some path", is_param: false}];
         var result:Array<PathPartData>;
@@ -40,7 +40,7 @@ class TestPath extends Test {
 
     function test_path_params_should_provide_list_of_params() {
         // ARRANGE
-        var path:Path = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}/{paramBool:Bool}/{paramBool:Bool}';
+        var path:Path<Dynamic> = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}/{paramBool:Bool}/{paramBool:Bool}';
 
         var expected:Array<PathParamData> = [
             { param: "paramInt", type: PathParamType.INT },
@@ -62,7 +62,7 @@ class TestPath extends Test {
 
     function test_path_match_should_match_with_same_path_url() {
         // ARRANGE
-        var path:Path = '/some/simple/path';
+        var path:Path<Dynamic> = '/some/simple/path';
 
         var valueToMath:String = 'some/simple/path/';
         var expectedMatch:PathMatchData = {matched: true, params: []};
@@ -77,7 +77,7 @@ class TestPath extends Test {
 
     function test_path_match_should_not_match_with_same_path_url_missing() {
         // ARRANGE
-        var path:Path = '/some/simple/path';
+        var path:Path<Dynamic> = '/some/simple/path';
 
         var valueToMath:String = 'some/simple/';
         var expectedMatch:PathMatchData = {matched: false, params: []};
@@ -92,7 +92,7 @@ class TestPath extends Test {
 
     function test_path_match_should_not_match_with_same_path_url_extra() {
         // ARRANGE
-        var path:Path = '/some/simple/path/';
+        var path:Path<Dynamic> = '/some/simple/path/';
 
         var valueToMath:String = 'some/simple/path/extra';
         var expectedMatch:PathMatchData = {matched: false, params: []};
@@ -107,7 +107,7 @@ class TestPath extends Test {
 
     function test_path_match_should_not_match_with_different_path_url() {
         // ARRANGE
-        var path:Path = '/some/simple/path';
+        var path:Path<Dynamic> = '/some/simple/path';
 
         var valueToMath:String = 'some/complex/path/';
         var expectedMatch:PathMatchData = {matched: false, params: []};
@@ -122,7 +122,7 @@ class TestPath extends Test {
 
     function test_path_match_should_match_with_string_param() {
         // ARRANGE
-        var path:Path = '/some/{p1:String}/path/{p2:String}';
+        var path:Path<Dynamic> = '/some/{p1:String}/path/{p2:String}';
 
         var valueToMath:String = 'some/simple/path/10';
 
@@ -145,7 +145,7 @@ class TestPath extends Test {
 
     function test_path_match_should_match_with_int_param() {
         // ARRANGE
-        var path:Path = '/some/{p1:Int}/path/{p2:Int}/{p3:Int}/{p4:Int}';
+        var path:Path<Dynamic> = '/some/{p1:Int}/path/{p2:Int}/{p3:Int}/{p4:Int}';
 
         var valueToMatch_1:String = 'some/0/path/0/0/0';
         var valueToMatch_2:String = 'some/10/path/0xFF/-20/-0xFF';
@@ -193,7 +193,7 @@ class TestPath extends Test {
 
     function test_path_match_should_match_with_float_param() {
         // ARRANGE
-        var path:Path = '/some/{p1:Float}/path/{p2:Float}/{p3:Float}/{p4:Float}';
+        var path:Path<Dynamic> = '/some/{p1:Float}/path/{p2:Float}/{p3:Float}/{p4:Float}';
 
         var valueToMatch_1:String = 'some/0/path/0/0/0';
         var valueToMatch_2:String = 'some/1./path/0.1/-2./-0.1';
@@ -239,5 +239,60 @@ class TestPath extends Test {
         Assert.same(expectedMatch_3, resultMatch_3);
     }
 
+    function test_path_should_be_builded_with_params() {
+        // ARRANGE
+        var path:Path<{paramInt:Int, paramString:String, paramFloat:Float, paramBool:Bool}> = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}';
+
+        var valueParams = {
+            paramInt: 10,
+            paramString: "hello world",
+            paramFloat: 0.1,
+            paramBool: true
+        };
+
+        var expectedBuildedPath:String = '/some/10/hello%20world/0.1/true';
+        var resultBuildedPath:String;
+
+        // ACT
+        resultBuildedPath = path.build(valueParams);
+
+        // ASSERT
+        Assert.equals(expectedBuildedPath, resultBuildedPath);
+    }
+
+    function test_path_extraction_should_generate_object_with_path_values() {
+        // ARRANGE
+        var path:Path<{paramInt:Int, paramString:String, paramFloat:Float, paramBool:Bool}> = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}';
+        var valueToMatch:String = '/some/10/hello%20world/0.1/true';
+
+        var expectedValue = {
+            paramInt: 10,
+            paramString: "hello world",
+            paramFloat: 0.1,
+            paramBool: true
+        };
+
+        var resultValue;
+
+        // ACT
+        resultValue = path.extract(valueToMatch);
+
+        // ASSERT
+        Assert.same(expectedValue, resultValue);
+    }
+    
+    function test_path_extraction_should_return_null_if_path_dont_match() {
+        // ARRANGE
+        var path:Path<{paramInt:Int, paramString:String, paramFloat:Float, paramBool:Bool}> = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}';
+        var valueToMatch:String = '/some/random/url';
+
+        var resultValue;
+
+        // ACT
+        resultValue = path.extract(valueToMatch);
+
+        // ASSERT
+        Assert.isNull(resultValue);
+    }
     
 }

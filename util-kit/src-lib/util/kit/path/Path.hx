@@ -1,21 +1,20 @@
 package util.kit.path;
 
-import helper.kits.StringKit;
 import haxe.ds.StringMap;
 
-abstract Path(String) {
+abstract Path<T>(String) {
 
     inline private function new(value:String) {
         this = value;
     }
 
     @:from
-    inline static private function fromString(value:String):Path return new Path(value);
+    inline static private function fromString<T>(value:String):Path<T> return new Path(value);
 
     @:to
     inline public function toString():String return this;
 
-    inline public function parts():Array<PathPartData> {
+    public function parts():Array<PathPartData> {
         var result:Array<PathPartData> = [];
 
         var capturedParams:StringMap<Int> = new StringMap<Int>();
@@ -87,8 +86,10 @@ abstract Path(String) {
 
         var pathParts:Array<PathPartData> = parts();
         var toMatchParts:Array<String> = supportBreakParts(toMatch);
-
-        if (pathParts.length != toMatchParts.length) return {matched: false, params: [] };
+        
+        if (pathParts.length != toMatchParts.length) {
+            return {matched: false, params: [] };
+        }
 
         for (i in 0 ... pathParts.length) {
             var pathPart:PathPartData = pathParts[i];
@@ -136,5 +137,46 @@ abstract Path(String) {
     inline private function isFloat(value:String):Bool {
         var r:EReg = new EReg('^[-]?[\\d]+[.]?[\\d]*$', "");
         return r.match(value);
+    }
+
+    public function build(data:T):String {
+        var result:String = '';
+        var pathParts:Array<PathPartData> = parts();
+
+        for (part in pathParts) {
+
+            if (!part.is_param) {
+                result += '/' + part.part;
+                continue;
+            }
+
+            var value:Dynamic = Reflect.field(data, part.param);
+            
+            if (value == null) value = switch (part.type) {
+                case PathParamType.INT: value = 0;
+                case PathParamType.FLOAT: value = 0.0;
+                case PathParamType.BOOL: value = false;
+                case PathParamType.STRING: value = '';
+            }
+
+            result += '/' + StringTools.urlEncode(Std.string(value));
+            
+        }
+
+        return result;
+    }
+    
+    public function extract(path:String):T {
+        var matchResult:PathMatchData = match(path);
+
+        if (!matchResult.matched) return null;
+
+        var result:Dynamic = { };
+
+        for (param in matchResult.params) {
+            Reflect.setField(result, param.param, param.value);
+        }
+
+        return result;
     }
 }
