@@ -1,5 +1,6 @@
 package util.kit.test.unit.path;
 
+import util.kit.nothing.Nothing;
 import util.kit.path.PathMatchData;
 import util.kit.path.PathParamData;
 import util.kit.path.PathParamType;
@@ -280,7 +281,7 @@ class TestPath extends Test {
         // ASSERT
         Assert.same(expectedValue, resultValue);
     }
-    
+
     function test_path_extraction_should_return_null_if_path_dont_match() {
         // ARRANGE
         var path:Path<{paramInt:Int, paramString:String, paramFloat:Float, paramBool:Bool}> = '/some/{paramInt:Int}/{paramString:String}/{paramFloat:Float}/{paramBool:Bool}';
@@ -293,6 +294,20 @@ class TestPath extends Test {
 
         // ASSERT
         Assert.isNull(resultValue);
+    }
+
+    function test_path_build_without_parameters() {
+        // ARRANGE
+        var path:Path<Nothing> = '/some/path';
+
+        var expectedBuildedPath:String = '/some/path';
+        var resultBuildedPath:String;
+
+        // ACT
+        resultBuildedPath = path.build(null);
+
+        // ASSERT
+        Assert.equals(expectedBuildedPath, resultBuildedPath);
     }
     
 }
