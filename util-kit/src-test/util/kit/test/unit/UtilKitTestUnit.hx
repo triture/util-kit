@@ -1,5 +1,6 @@
 package util.kit.test.unit;
 
+import util.kit.test.unit.lang.TestLang;
 import util.kit.test.unit.zip.TestZip;
 import util.kit.test.unit.nothing.TestNothing;
 import util.kit.test.unit.kit.TestArrayKit;
@@ -8,6 +9,8 @@ import util.kit.test.unit.path.TestPath;
 import util.kit.test.unit.uuid.TestUUID;
 import utest.ui.Report;
 import utest.Runner;
+
+using util.kit.lang.Lang;
 
 class UtilKitTestUnit {
 
@@ -20,6 +23,7 @@ class UtilKitTestUnit {
         runner.addCase(new TestArrayKit());
         runner.addCase(new TestNothing());
         runner.addCase(new TestZip());
+        runner.addCase(new TestLang());
         
         Report.create(runner);
         runner.run();
