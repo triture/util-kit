@@ -11,3 +11,4 @@ services:
         volumes:
             - ./docker/shared:/docker-shared
             - ./util-kit:/util-kit
+            - ./docs:/util-kit/docs

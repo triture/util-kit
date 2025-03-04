@@ -9,10 +9,10 @@ class MathKit {
         return (Math.fround(number * factor) / factor);
     }
 
-    static public function linear(data:Array<Array<Float>>):Dynamic {
+    static public function linear(data:Array<Array<Null<Float>>>):Dynamic {
         var precision:Int = 2;
 
-        var sum:Array<Float> = [0, 0, 0, 0, 0];
+        var sum:Array<Null<Float>> = [0, 0, 0, 0, 0];
         var len:Int = 0;
 
         for (n in 0 ... data.length) {
