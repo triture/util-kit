@@ -1,5 +1,6 @@
 package util.kit.lang;
 
+import haxe.Rest;
 import haxe.ds.StringMap;
 
 /**
@@ -66,12 +67,12 @@ import haxe.ds.StringMap;
     Lang.load(dictionary);
     
     // Acessando valores aninhados
-    var sucesso = "MESSAGES.SUCCESS".lang();  // "Operação realizada com sucesso"
-    var erro = "MESSAGES.ERRORS.NOT_FOUND".lang();  // "Registro não encontrado"
+    var sucesso = "MESSAGES_SUCCESS".lang();  // "Operação realizada com sucesso"
+    var erro = "MESSAGES_ERRORS_NOT_FOUND".lang();  // "Registro não encontrado"
     
     // Acessando valores de array
-    var domingo = "DAYS.0".lang();  // "Domingo"
-    var sexta = "DAYS.5".lang();    // "Sexta"
+    var domingo = "DAYS_0".lang();  // "Domingo"
+    var sexta = "DAYS_5".lang();    // "Sexta"
     ```
     
     Note que todas as chaves são tratadas como case-insensitive. Portanto, "welcome", "Welcome" e "WELCOME" são 
@@ -95,34 +96,7 @@ class Lang {
         @param data:Dynamic Objeto contendo os dados a serem carregados no dicionário
     **/
     static public function load(data:Dynamic):Void {
-        DICTIONARY = processData(data);
-    }
-
-    static private function processData(data:Dynamic, ?field:String, ?result:StringMap<String>):StringMap<String> {
-        if (result == null) result = new StringMap<String>();
-        if (data == null) return result;
-        
-        if (field == null) field = '';
-        else field = field.toUpperCase() + '.';
-
-        for (key in Reflect.fields(data)) {
-            var value:Dynamic = Reflect.field(data, key);
-            
-            if (Std.isOfType(value, Array)) {
-                var arr:Array<Dynamic> = value;
-                
-                for (i in 0...arr.length) {
-                    var item:Dynamic = arr[i];
-                    result.set(field + key.toUpperCase() + '.${i}', Std.string(item));
-                }
-            }
-            else if (Std.isOfType(value, String)) result.set(field + key.toUpperCase(), value);
-            else if (Std.isOfType(value, Bool) || Std.isOfType(value, Int) || Std.isOfType(value, Float)) result.set(field + key.toUpperCase(), Std.string(value));
-            else processData(value, field + key, result);
-
-        }
-
-        return result;
+        DICTIONARY = LangSupport.processDictionary(data);
     }
 
     /**
@@ -132,17 +106,23 @@ class Lang {
         Os marcadores `$v` no texto serão substituídos sequencialmente pelos valores fornecidos.
         Se um valor for `null`, ele será substituído por uma string vazia.
         
-        @param value:String A chave que identifica o texto no dicionário
+        @param key:String A chave que identifica o texto no dicionário
         @param rest:String Valores que serão usados para substituir os marcadores `$v` no texto
         @return String O texto processado com as substituições ou uma string vazia se a chave não existir
     **/
-    static public function lang(value:String, ...rest:String):String {
+    inline static public function lang(key:String, ...rest:String):String {
+        return getValue(key, rest);
+    }
+
+    static private function getValue(key:String, params:Array<String>):String {
+        if (key == null) return '';
+        
         if (DICTIONARY == null) DICTIONARY = new StringMap<String>();
 
-        var value:String = DICTIONARY.get(value.toUpperCase());
+        var value:String = DICTIONARY.get(key.toUpperCase());
 
         if (value == null) return '';
-        if (rest == null || rest.length == 0) return value;
+        if (params == null || params.length == 0) return value;
         
         var result:String = '';
         
@@ -152,17 +132,89 @@ class Lang {
         while (ereg.match(value)) {
             result += ereg.matchedLeft();
             
-            var restValue:String = rest[count];
+            var restValue:String = params[count];
             if (restValue == null) restValue = '';
 
             result += restValue;
             value = ereg.matchedRight();
 
             count++;
-            if (count > rest.length) break;            
+            if (count > params.length) break;            
         }
 
         return result + value;
     }
+    
+    /**
+        Carrega um dicionário de idioma a partir de recursos embarcados.
+        
+        Esta função busca por recursos com o padrão de nome 'lang-XX', onde XX é o código do idioma 
+        (por exemplo, PT, EN, ES). Quando encontra o idioma solicitado, carrega automaticamente o 
+        dicionário correspondente.
+        
+        Os arquivos de idioma devem ser JSON válidos e seguir a estrutura de dicionário esperada pela
+        função `load()`.
+        
+        Exemplo de uso:
+        ```haxe
+        // Carrega o dicionário em português
+        Lang.setLanguage("PT");
 
+        // Obtém texto traduzido
+        var mensagem = "GREETING".lang(); // Retorna o texto em português
+
+        // Alterna para inglês
+        Lang.setLanguage("EN");
+
+        // Agora obtém o mesmo texto em inglês
+        var message = "GREETING".lang(); // Retorna o texto em inglês
+        ```
+        
+        #### Como configurar os arquivos de idioma:
+        1. Crie arquivos JSON para cada idioma seguindo a estrutura:
+        ```json
+        {
+            "GREETING": "Olá mundo!",
+            "FAREWELL": "Adeus!",
+            "MESSAGES": {
+                "SUCCESS": "Operação realizada com sucesso",
+                "ERROR": "Ocorreu um erro"
+            }
+        }
+        ```
+        2. Adicione os arquivos como recursos embarcados com nomes como `lang-PT.json`, `lang-EN.json`, etc.
+        3. Configure o seu projeto para incluir esses recursos usando a configuração apropriada para o seu compilador Haxe.
+        ``` haxe
+        // adicionar instrução no arquivo do compilador (ex: build.hxml)
+        --resource res/lang-pt.json@lang-pt
+        --resource res/lang-en.json@lang-en
+        ```
+
+        Se o idioma solicitado não for encontrado, a função emitirá um aviso no console e o dicionário atual não será alterado.
+
+        @param language:String Código do idioma a ser carregado (ex: "PT", "EN", "ES")
+    **/
+    static public function setLanguage(language:String):Void {
+        try {
+            for (name in haxe.Resource.listNames()) {
+                if (StringTools.startsWith(name, 'lang-')) {
+                    var lang:String = name.split('-')[1].toUpperCase();
+                    if (lang == language.toUpperCase()) {
+                        var data = haxe.Json.parse(haxe.Resource.getString(name));
+                        load(data);
+                        return;
+                    }
+                }
+            }
+
+            haxe.Log.trace('WARNING: Language not found: ' + language, null);
+
+        } catch(e:Dynamic) {
+            haxe.Log.trace('WARNING: Error loading language data - ${Std.string(e)}', null);
+        }
+    }
+
+    inline static public function L(key:LangKey, ...rest:String):String {
+        return getValue(key, rest);
+    }
 }

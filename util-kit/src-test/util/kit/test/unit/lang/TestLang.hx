@@ -1,7 +1,6 @@
 package util.kit.test.unit.lang;
 
 import utest.Assert;
-import util.kit.lang.Lang;
 import utest.Test;
 
 using util.kit.lang.Lang;
@@ -121,9 +120,9 @@ class TestLang extends Test {
         }
 
         var valueKey1:String = "SIMPLE_KEY";
-        var valueKey2:String = "GROUP.A";
-        var valueKey3:String = "GROUP.B";
-        var valueKey4:String = "GROUP.C.D";
+        var valueKey2:String = "GROUP_A";
+        var valueKey3:String = "GROUP_B";
+        var valueKey4:String = "GROUP_C_D";
 
         var expected1:String = "KEY";
         var expected2:String = "a";
@@ -161,10 +160,10 @@ class TestLang extends Test {
             ]
         }
 
-        var valueKey1:String = "DATA.0";
-        var valueKey2:String = "DATA.1";
-        var valueKey3:String = "DATA.2";
-        var valueKey4:String = "DATA.3";
+        var valueKey1:String = "DATA_0";
+        var valueKey2:String = "DATA_1";
+        var valueKey3:String = "DATA_2";
+        var valueKey4:String = "DATA_3";
 
         var expected1:String = "a";
         var expected2:String = "b";
