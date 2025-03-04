@@ -10,8 +10,6 @@ import util.kit.test.unit.uuid.TestUUID;
 import utest.ui.Report;
 import utest.Runner;
 
-using util.kit.lang.Lang;
-
 class UtilKitTestUnit {
 
     static public function main() {

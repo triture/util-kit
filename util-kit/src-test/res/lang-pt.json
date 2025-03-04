@@ -9,5 +9,6 @@
     "N" : [
         "pt.N.0",
         "pt.N.1"
-    ]
+    ],
+    "PARAMS" : "parametros $v $v"
 }

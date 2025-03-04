@@ -9,4 +9,4 @@
 --macro include('util')
 --macro include('helper', true, ["helper.kits.DisplayKit", "helper.kits.CommandLineKit", "helper.kits.FileKit", "helper.kits.ValidatorKit"])
 
--xml ./build/docs/crapp-ui.xml
+-xml ./build/docs/util-kit.xml

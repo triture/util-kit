@@ -4,7 +4,7 @@ import haxe.Rest;
 import haxe.ds.StringMap;
 
 /**
-    A classe `Lang` oferece um sistema de internacionalização simplificado que permite carregar e acessar textos 
+    `Lang` oferece um sistema de internacionalização simplificado que permite carregar e acessar textos 
     através de chaves em um dicionário.
     
     É recomendado usar esta classe tanto por importação direta quanto como [extensão estática](https://haxe.org/manual/lf-static-extension.html):
@@ -13,7 +13,7 @@ import haxe.ds.StringMap;
     // Importação normal
     import util.kit.lang.Lang;
     
-    // Extensão estática (recomendado)
+    // Extensão estática
     using util.kit.lang.Lang;
     ```
     
@@ -84,20 +84,10 @@ import haxe.ds.StringMap;
     - **Suporte a estruturas aninhadas**: Permite organizar o dicionário em estruturas hierárquicas e arrays
     - **Normalização de chaves**: Converte todas as chaves para maiúsculas para tornar o sistema case-insensitive
 **/
-class Lang {
+@:build(util.kit.lang.LangMacro.build())
+enum abstract Lang(String) {
 
     static private var DICTIONARY:StringMap<String>;
-
-    /**
-        Carrega dados no dicionário de internacionalização.
-        Os dados podem ser estruturados como objetos aninhados ou arrays.
-        Todas as chaves são convertidas para acesso case-insensitive.
-        
-        @param data:Dynamic Objeto contendo os dados a serem carregados no dicionário
-    **/
-    static public function load(data:Dynamic):Void {
-        DICTIONARY = LangSupport.processDictionary(data);
-    }
 
     /**
         Obtém um texto do dicionário a partir de uma chave e substitui os marcadores de 
@@ -144,7 +134,18 @@ class Lang {
 
         return result + value;
     }
-    
+
+    /**
+        Carrega dados no dicionário de internacionalização.
+        Os dados podem ser estruturados como objetos aninhados ou arrays.
+        Todas as chaves são convertidas para acesso case-insensitive.
+        
+        @param data:Dynamic Objeto contendo os dados a serem carregados no dicionário
+    **/
+    static public function load(data:Dynamic):Void {
+        DICTIONARY = LangSupport.processDictionary(data);
+    }
+
     /**
         Carrega um dicionário de idioma a partir de recursos embarcados.
         
@@ -169,6 +170,12 @@ class Lang {
         // Agora obtém o mesmo texto em inglês
         var message = "GREETING".lang(); // Retorna o texto em inglês
         ```
+
+        Com Recursos embarcados, também é possível acessar como enum:
+        ```haxe
+        Lang.GREETING; // Retorna o texto em português
+        Lang.WITH_VARS.vars("Valor", "Valor"); // Aplica valores no texto - se houver
+        ```
         
         #### Como configurar os arquivos de idioma:
         1. Crie arquivos JSON para cada idioma seguindo a estrutura:
@@ -176,6 +183,7 @@ class Lang {
         {
             "GREETING": "Olá mundo!",
             "FAREWELL": "Adeus!",
+            "WITH_VARS": "Texto com variáveis: $v, $v",
             "MESSAGES": {
                 "SUCCESS": "Operação realizada com sucesso",
                 "ERROR": "Ocorreu um erro"
@@ -214,7 +222,11 @@ class Lang {
         }
     }
 
-    inline static public function L(key:LangKey, ...rest:String):String {
-        return getValue(key, rest);
-    }
+    @:to
+    private function toString():String return getValue(this, []);
+    
+    public function key():String return this;
+
+    public function params(...rest:String):String return getValue(this, rest);
+    
 }
