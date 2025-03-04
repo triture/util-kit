@@ -1,5 +1,6 @@
 package util.kit.test.unit.lang;
 
+import util.kit.lang.LangKey;
 import utest.Assert;
 import utest.Test;
 
@@ -190,4 +191,83 @@ class TestLang extends Test {
         
     }
 
+    function test_using_resource_english_dictionary() {
+        // ARRANGE
+        var valueLanguage:String = "en";
+        
+        var value_TEST = LangKey.TEST;
+        var value_A_B_C = LangKey.A_B_C;
+        var value_A_D = LangKey.A_D;
+        var value_N_0 = LangKey.N_0;
+        var value_N_1 = LangKey.N_1;
+
+        var expected_TEST = "en.Test";
+        var expected_A_B_C = "en.A.B.C";
+        var expected_A_D = "en.A.D";
+        var expected_N_0 = "en.N.0";
+        var expected_N_1 = "en.N.1";
+
+        var result_TEST:String;
+        var result_A_B_C:String;
+        var result_A_D:String;
+        var result_N_0:String;
+        var result_N_1:String;
+
+        // ACT
+        Lang.setLanguage(valueLanguage);
+
+        result_TEST = Lang.lang(value_TEST);
+        result_A_B_C = Lang.lang(value_A_B_C);
+        result_A_D = Lang.lang(value_A_D);
+        result_N_0 = Lang.lang(value_N_0);
+        result_N_1 = Lang.lang(value_N_1);
+
+        // ASSERT
+        Assert.equals(expected_TEST, result_TEST);
+        Assert.equals(expected_A_B_C, result_A_B_C);
+        Assert.equals(expected_A_D, result_A_D);
+        Assert.equals(expected_N_0, result_N_0);
+        Assert.equals(expected_N_1, result_N_1);
+        
+    }
+
+    function test_using_resource_portuguese_dictionary() {
+        // ARRANGE
+        var valueLanguage:String = "pt";
+        
+        var value_TEST = LangKey.TEST;
+        var value_A_B_C = LangKey.A_B_C;
+        var value_A_D = LangKey.A_D;
+        var value_N_0 = LangKey.N_0;
+        var value_N_1 = LangKey.N_1;
+
+        var expected_TEST = "pt.Test";
+        var expected_A_B_C = "pt.A.B.C";
+        var expected_A_D = "pt.A.D";
+        var expected_N_0 = "pt.N.0";
+        var expected_N_1 = "pt.N.1";
+
+        var result_TEST:String;
+        var result_A_B_C:String;
+        var result_A_D:String;
+        var result_N_0:String;
+        var result_N_1:String;
+
+        // ACT
+        Lang.setLanguage(valueLanguage);
+
+        result_TEST = Lang.lang(value_TEST);
+        result_A_B_C = Lang.lang(value_A_B_C);
+        result_A_D = Lang.lang(value_A_D);
+        result_N_0 = Lang.lang(value_N_0);
+        result_N_1 = Lang.lang(value_N_1);
+
+        // ASSERT
+        Assert.equals(expected_TEST, result_TEST);
+        Assert.equals(expected_A_B_C, result_A_B_C);
+        Assert.equals(expected_A_D, result_A_D);
+        Assert.equals(expected_N_0, result_N_0);
+        Assert.equals(expected_N_1, result_N_1);
+        
+    }
 }
