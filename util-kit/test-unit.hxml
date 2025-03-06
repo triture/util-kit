@@ -7,6 +7,9 @@
 
 -main util.kit.test.unit.UtilKitTestUnit
 
+--macro util.kit.lang.LangMacro.depends('src-test/res/lang-en.json')
+--macro util.kit.lang.LangMacro.depends('src-test/res/lang-pt.json')
+
 --resource src-test/res/lang-en.json@lang-en
 --resource src-test/res/lang-pt.json@lang-pt
 

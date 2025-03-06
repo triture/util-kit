@@ -101,6 +101,30 @@ import haxe.ds.StringMap;
     // Acessando valores
     var texto = Lang.lang("GREETING"); // "Olá mundo!"
     ```
+    
+    #### Como lidar com o cache do VSCode:
+    
+    Quando você modifica arquivos de recursos JSON externos, o VSCode não atualiza automaticamente 
+    as opções de autocompletar/intellisense devido ao cache do completion server. Isso significa que 
+    novas chaves adicionadas aos arquivos JSON não aparecerão no autocompletar até que você reinicie 
+    o servidor de compilação.
+    
+    Para resolver este problema, você deve registrar uma dependência explícita entre seu código e os 
+    arquivos JSON no seu arquivo HXML:
+    
+    ```hxml
+    # Registra dependência dos arquivos de idioma para atualizar o cache do completion server
+    --macro util.kit.lang.LangMacro.depends("res/lang-pt.json")
+    --macro util.kit.lang.LangMacro.depends("res/lang-en.json")
+    
+    # Registra recursos normalmente
+    --resource res/lang-pt.json@lang-pt
+    --resource res/lang-en.json@lang-en
+    ```
+    
+    Com essa configuração, sempre que você modificar um dos arquivos JSON listados, o VSCode 
+    reconhecerá a necessidade de recompilar e atualizar o cache do completion server, garantindo 
+    que as novas chaves apareçam corretamente no autocompletar.
 **/
 @:build(util.kit.lang.LangMacro.build())
 enum abstract Lang(String) {

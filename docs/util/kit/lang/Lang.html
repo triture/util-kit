@@ -67,7 +67,24 @@ var dictionary = {
 Lang.load(dictionary);
 
 // Acessando valores
-var texto = Lang.lang("GREETING"); // "Olá mundo!"</code></pre></div><h3 class="section">Static methods</h3><div class="fields"><div class="field "><a name="lang"></a><h3 class="anchor"><code><span class="label label-static">static</span><span class="label label-inline">inline</span><a href="#lang"><span class="identifier">lang</span></a>(<span style="white-space:nowrap">key:<a class="type" title="String - The basic String class." href="../../../String.html">String</a>,</span> <span style="white-space:nowrap">rest:<span class="type">Rest</span>&lt;<a class="type" title="String - The basic String class." href="../../../String.html">String</a>&gt;</span>):<a class="type" title="String - The basic String class." href="../../../String.html">String</a></code></h3><div class="doc"><p>Obtém um texto do dicionário a partir de uma chave e substitui os marcadores de 
+var texto = Lang.lang("GREETING"); // "Olá mundo!"</code></pre>
+<h4>Como lidar com o cache do VSCode:</h4>
+<p>Quando você modifica arquivos de recursos JSON externos, o VSCode não atualiza automaticamente 
+as opções de autocompletar/intellisense devido ao cache do completion server. Isso significa que 
+novas chaves adicionadas aos arquivos JSON não aparecerão no autocompletar até que você reinicie 
+o servidor de compilação.</p>
+<p>Para resolver este problema, você deve registrar uma dependência explícita entre seu código e os 
+arquivos JSON no seu arquivo HXML:</p>
+<pre><code class="prettyprint hxml"># Registra dependência dos arquivos de idioma para atualizar o cache do completion server
+--macro util.kit.lang.LangMacro.depends("res/lang-pt.json")
+--macro util.kit.lang.LangMacro.depends("res/lang-en.json")
+
+# Registra recursos normalmente
+--resource res/lang-pt.json@lang-pt
+--resource res/lang-en.json@lang-en</code></pre>
+<p>Com essa configuração, sempre que você modificar um dos arquivos JSON listados, o VSCode 
+reconhecerá a necessidade de recompilar e atualizar o cache do completion server, garantindo 
+que as novas chaves apareçam corretamente no autocompletar.</p></div><h3 class="section">Static methods</h3><div class="fields"><div class="field "><a name="lang"></a><h3 class="anchor"><code><span class="label label-static">static</span><span class="label label-inline">inline</span><a href="#lang"><span class="identifier">lang</span></a>(<span style="white-space:nowrap">key:<a class="type" title="String - The basic String class." href="../../../String.html">String</a>,</span> <span style="white-space:nowrap">rest:<span class="type">Rest</span>&lt;<a class="type" title="String - The basic String class." href="../../../String.html">String</a>&gt;</span>):<a class="type" title="String - The basic String class." href="../../../String.html">String</a></code></h3><div class="doc"><p>Obtém um texto do dicionário a partir de uma chave e substitui os marcadores de 
 posição (<code>$v</code>) pelos parâmetros fornecidos.</p>
 <p>Os marcadores <code>$v</code> no texto serão substituídos sequencialmente pelos valores fornecidos.
 Se um valor for <code>null</code>, ele será substituído por uma string vazia.</p><p class="javadoc">Parameters:</p><table class="table table-bordered params"><tr><th style="width:25%;"><code>key:String</code></th><td><p>A chave que identifica o texto no dicionário</p></td></tr><tr><th style="width:25%;"><code>rest:String</code></th><td><p>Valores que serão usados para substituir os marcadores <code>$v</code> no texto</p></td></tr></table><p class="javadoc">Returns:</p><div class="indent inline-content"><p>String O texto processado com as substituições ou uma string vazia se a chave não existir</p></div></div></div><div class="field "><a name="load"></a><h3 class="anchor"><code><span class="label label-static">static</span><a href="#load"><span class="identifier">load</span></a>(<span style="white-space:nowrap">data:<a class="type" title="Dynamic - Dynamic is a special type which is compatible with all other types." href="../../../Dynamic.html">Dynamic</a></span>):<a class="type" title="Void - The standard Void type." href="../../../Void.html">Void</a></code></h3><div class="doc"><p>Carrega dados no dicionário de internacionalização.

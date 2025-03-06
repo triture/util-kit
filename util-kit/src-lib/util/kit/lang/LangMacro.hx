@@ -14,6 +14,10 @@ class LangMacro {
     public function new() {
         
     }
+    
+    static public function depends(file:String):Void {
+        haxe.macro.Context.registerModuleDependency("haxe.Resource", file);
+    }
 
     private function getLangResource():Dynamic {
         try {
