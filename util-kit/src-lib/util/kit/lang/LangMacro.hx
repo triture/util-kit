@@ -44,11 +44,13 @@ class LangMacro {
         var dict = LangSupport.processDictionary(data);
 
         for (key in dict.keys()) {
+            
             fields.push({
                 name : key,
                 pos : Context.currentPos(),
                 kind : FVar(null, null),
-                access : [AAbstract]
+                access : [AAbstract],
+                doc: dict.get(key)
             });
         }
 
