@@ -13,4 +13,4 @@
 --resource src-test/res/lang-en.json@lang-en
 --resource src-test/res/lang-pt.json@lang-pt
 
--neko ./build/util/kit/test/unit.n
+-cpp ./build/util/kit/test/cpp/

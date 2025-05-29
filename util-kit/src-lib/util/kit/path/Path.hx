@@ -110,7 +110,7 @@ abstract Path<T>(String) {
     }
 
     inline private function supportCreateEReg():EReg {
-        return new EReg('^{([a-zA-Z_]+[\\w_]?):(Int|String|Float|Bool)}$', "");
+        return new EReg('^\\{([a-zA-Z_]+[\\w_]?):(Int|String|Float|Bool)\\}$', "");
     }
 
     /**

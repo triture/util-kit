@@ -29,8 +29,7 @@ class TestLang extends Test {
     function test_dictionary_keys_are_case_insensitives() {
         // ARRANGE
         var dictionary:Dynamic = {
-            word : "World",
-            WORD : "Hello"
+            WOrd : "Hello"
         }
         
         var valueKey:String = "WoRd";

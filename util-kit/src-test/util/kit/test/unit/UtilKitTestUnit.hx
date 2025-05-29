@@ -1,7 +1,11 @@
 package util.kit.test.unit;
 
-import util.kit.test.unit.lang.TestLang;
+#if sys
 import util.kit.test.unit.zip.TestZip;
+#end
+
+import util.kit.test.unit.branch.TestBranch;
+import util.kit.test.unit.lang.TestLang;
 import util.kit.test.unit.nothing.TestNothing;
 import util.kit.test.unit.kit.TestArrayKit;
 import util.kit.test.unit.kid.TestKid;
@@ -15,13 +19,17 @@ class UtilKitTestUnit {
     static public function main() {
         var runner = new Runner();
         
+        #if sys
+        runner.addCase(new TestZip());
+        #end
+
         runner.addCase(new TestUUID());
         runner.addCase(new TestPath());
         runner.addCase(new TestKid());
         runner.addCase(new TestArrayKit());
         runner.addCase(new TestNothing());
-        runner.addCase(new TestZip());
         runner.addCase(new TestLang());
+        runner.addCase(new TestBranch());
         
         Report.create(runner);
         runner.run();
