@@ -136,6 +136,73 @@ class DateKit {
     public static function getDateMidnight(date:Date):Date return Date.fromString(getDateMysqlFormat(date) + " 23:59:59");
     public static function getDateFreshDay(date:Date):Date return Date.fromString(getDateMysqlFormat(date) + " 00:00:00");
 
+
+    public static function brazilStringDateToDate(value:String, subjectiveDate:Bool = true):Date {
+        value = StringTools.trim(value).toLowerCase();
+
+        if (subjectiveDate) {
+            if (value == "hoje" || value == "today") return Date.now();
+            if (value == "amanha" || value == "amanhã" || value == "tomorrow") return addDays(Date.now(), 1);
+            if (value == "ontem" || value == "yesterday") return addDays(Date.now(), -1);
+        }
+
+        value = value.split("-").join(".");
+        value = value.split("/").join(".");
+        value = value.split("\\").join(".");
+        value = value.split(":").join(".");
+        value = value.split(" ").join(".");
+
+        while (value.indexOf("..") >= 0) value = value.split("..").join(".");
+
+        var vals:Array<String> = value.split(".");
+
+        if (vals.length != 3 && vals.length != 5) return null;
+
+        for (i in 0 ... vals.length) {
+            vals[i] = StringKit.getAllowedChars(vals[i], "0123456789");
+            if (vals[i].length == 0) return null;
+        }
+
+        var day:Null<Int> = Std.parseInt(vals[0]);
+        var month:Null<Int> = Std.parseInt(vals[1]);
+        var year:Null<Int> = Std.parseInt(vals[2]);
+
+        if (day == null || month == null || year == null) return null;
+        if (day < 1 || day > 31 || month < 1 || month > 12 || year <= 0) return null;
+
+        if (vals[2].length < 4) {
+            year = year + 2000;
+            vals[2] = Std.string(year);
+        }
+
+        vals[1] = StringTools.lpad(Std.string(month), "0", 2);
+        vals[0] = StringTools.lpad(Std.string(day), "0", 2);
+
+        if (vals.length == 5) {
+            var hour:Null<Int> = Std.parseInt(vals[3]);
+            var minute:Null<Int> = Std.parseInt(vals[4]);
+
+            if (hour == null || minute == null) return null;
+            if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+
+            vals[4] = StringTools.lpad(Std.string(minute), "0", 2);
+            vals[3] = StringTools.lpad(Std.string(hour), "0", 2);
+        }
+
+        try {
+            var date:Date = null;
+
+            if (vals.length == 3) date = Date.fromString(vals[2] + "-" + vals[1] + "-" + vals[0]);
+            else date = Date.fromString(vals[2] + "-" + vals[1] + "-" + vals[0] + " " + vals[3] + ":" + vals[4] + ":00");
+
+            if (DateTools.format(date, "%d.%m.%Y") == '${vals[0]}.${vals[1]}.${vals[2]}') return date;
+
+            return null;
+        } catch (e:Dynamic) {
+            return null;
+        }
+    }
+
     public static function convertToDate(value:String, subjectiveDate:Bool = true):Date {
         value = StringTools.trim(value).toLowerCase();
 
