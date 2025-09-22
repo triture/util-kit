@@ -79,8 +79,10 @@ class DateKit {
         var age:Int = cur.getFullYear() - birth.getFullYear();
 
         if (age > 0) {
-            if (birth.getMonth() > cur.getMonth()) age--;
-            else if (birth.getDate() > cur.getDay()) age--;
+            if (birth.getMonth() > cur.getMonth()
+                ||
+                (birth.getMonth() == cur.getMonth() && birth.getDate() > cur.getDay())
+            ) age--;
         }
 
         return age;
