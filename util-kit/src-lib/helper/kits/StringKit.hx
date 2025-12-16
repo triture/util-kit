@@ -418,7 +418,7 @@ class StringKit {
     }
 
     public static function isEmail(email:String):Bool {
-        var emailExpression:EReg = ~/[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z][A-Z][A-Z]?/i;
+        var emailExpression:EReg = ~/^[A-Z0-9]+[A-Z0-9._%-]*@[A-Z0-9]+[A-Z0-9.-]*\.[A-Z]{2,}$/i;
         return emailExpression.match(email);
     }
 
@@ -514,7 +514,7 @@ class StringKit {
 
     public static function isValidJson(value:String):Bool {
         if (isEmpty(value)) return false;
-        
+
         try {
             var json:Dynamic = haxe.Json.parse(value);
             return true;
