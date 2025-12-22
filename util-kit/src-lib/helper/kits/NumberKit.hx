@@ -42,23 +42,25 @@ class NumberKit {
     inline static public function degreeToRad(degree:Float):Float return degree * (Math.PI / 180);
 
     static public function getKeyForSeed(seed:String, precision:Int = 10):Float {
+        if (precision <= 1) precision = 1;
 
-        var out:String = "";
-        var hash:String = Md5.encode(seed);
-        var number:Array<String> = "0123456789".split("");
+        var hash:String = seed;
+
+        var out:Array<String> = [];
+        var minChar:Int = 48; // -> 0
+        var maxChar:Int = 57; // -> 9
 
         while (out.length < precision) {
-
-            for (letter in hash.split("")) {
-                if (number.indexOf(letter) >= 0) out += letter;
-
-                if (letter.length == precision) break;
-            }
-
             hash = Md5.encode(hash);
+
+            for (i in 0 ... hash.length) {
+                var code:Int = hash.charCodeAt(i);
+                if (code >= minChar && code <= maxChar) out.push(hash.charAt(i));
+                if (out.length == precision) break;
+            }
         }
 
-        return Std.parseFloat("0." + out);
+        return Std.parseFloat("0." + out.join(""));
     }
 
     static public function getIntKeyForSeed(seed:String, min:Int, max:Int):Int {
