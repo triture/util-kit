@@ -13,6 +13,32 @@ class StringKit {
         } else return value;
     }
 
+    public static function breakByChars(input:String, chars:String):Array<String> {
+        if (input == null || input.length == 0) return [];
+        else if (chars == null || chars.length == 0) return [input];
+
+        var result:Array<String> = [];
+        var word:String = "";
+
+        for (i in 0 ... input.length) {
+            var char:String = input.charAt(i);
+
+            if (chars.indexOf(char) == -1) {
+                word += char;
+                continue;
+            }
+
+            if (word.length > 0) {
+                result.push(word);
+                word = "";
+            }
+        }
+
+        if (word.length > 0) result.push(word);
+
+        return result;
+    }
+
     public static function getWordSurroundingCharAt(value:String, position:Int):String {
         var words:Array<String> = value.split(' ');
         var lastWord:String = '';
