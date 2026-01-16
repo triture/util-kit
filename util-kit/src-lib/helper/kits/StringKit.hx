@@ -14,7 +14,8 @@ class StringKit {
     }
 
     public static function breakByChars(input:String, chars:String):Array<String> {
-        if (input == null || input.length == 0) return [];
+        if (input == null) return [];
+        else if (input.length == 0) return [""];
         else if (chars == null || chars.length == 0) return [input];
 
         var result:Array<String> = [];
